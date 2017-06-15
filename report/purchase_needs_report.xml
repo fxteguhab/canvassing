@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<openerp>
-	<data>
-		<!--<report string="Purchase Needs" id="action_report_purchase_needs" model="purchase.needs" report_type="qweb-pdf"-->
-				<!--name="purchase_needs.report_purchase_needs" file="purchase_needs.report_purchase_needs"/>-->
-	</data>
-</openerp>
