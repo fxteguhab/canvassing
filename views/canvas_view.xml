@@ -8,13 +8,15 @@
 				<form>
 					<header>
 						<field name="state" widget="statusbar" readonly="1"/>
+						<button name="action_set_on_the_way" string="On The Way" type="object" states="draft" class="oe_highlight" />
+						<button name="action_set_finish" string="Finish" type="object" states="on_the_way" class="oe_highlight" />
 					</header>
 					<group col="4">
 						<group>
 							<field name="name"/>
-							<field name="fleet_vehicle"/>
-							<field name="driver1"/>
-							<field name="driver2"/>
+							<field name="fleet_vehicle_id"/>
+							<field name="driver1_id"/>
+							<field name="driver2_id"/>
 						</group>
 						<group>
 							<field name="date_created"/>
@@ -24,8 +26,8 @@
 					</group>
 					<notebook>
 						<page string="Stock Pickings">
-							<field name="canvas_stock_line">
-								<tree>
+							<field name="stock_line_ids">
+								<tree version="7.0" editable="bottom">
 									<field name="stock_picking_id"/>
 									<field name="address"/>
 									<field name="is_executed"/>
@@ -37,8 +39,8 @@
 							</field>
 						</page>
 						<page string="Invoices">
-							<field name="canvas_invoice_line">
-								<tree>
+							<field name="invoice_line_ids">
+								<tree version="7.0" editable="bottom">
 									<field name="invoice_id"/>
 									<field name="address"/>
 									<field name="is_executed"/>
@@ -48,8 +50,8 @@
 							</field>
 						</page>
 						<page string="Trip Expenses">
-							<field name="trip_expense">
-								<tree>
+							<field name="trip_expense_ids">
+								<tree version="7.0" editable="bottom">
 									<field name="product_id"/>
 									<field name="amount"/>
 								</tree>
@@ -71,9 +73,9 @@
 					<field name="date_created"/>
 					<field name="date_depart"/>
 					<field name="date_delivered"/>
-					<field name="fleet_vehicle"/>
-					<field name="driver1"/>
-					<field name="driver2"/>
+					<field name="fleet_vehicle_id"/>
+					<field name="driver1_id"/>
+					<field name="driver2_id"/>
 				</tree>
 			</field>
 		</record>
