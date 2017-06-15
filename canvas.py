@@ -21,10 +21,10 @@ class canvasssing_canvas(osv.Model):
 	_columns = {
 		'name': fields.char('Name', readonly=True),
 		'state': fields.selection(_CANVAS_STATE, 'State', readonly=True),
-		'date_created': fields.datetime('Date Created'),
-		'date_depart': fields.datetime('Date Depart'),
-		'date_delivered': fields.datetime('Date Delivered'),
-		'driver1_id': fields.many2one('hr.employee', 'Driver 1'),
+		'date_created': fields.datetime('Date Created', readonly=True),
+		'date_depart': fields.datetime('Date Depart', readonly=True),
+		'date_delivered': fields.datetime('Date Delivered', readonly=True),
+		'driver1_id': fields.many2one('hr.employee', 'Driver 1', required=True),
 		'driver2_id': fields.many2one('hr.employee', 'Driver 2'),
 		'fleet_vehicle_id': fields.many2one('fleet.vehicle', 'Vehicle'),
 		'trip_expense_ids': fields.one2many('canvassing.canvas.expense', 'canvas_id', 'Trip Expense'),
@@ -38,6 +38,22 @@ class canvasssing_canvas(osv.Model):
 		'date_created': lambda *a: datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
 		'state': 'draft',
 	}
+
+# OVERRIDES -----------------------------------------------------------------------------------------------------------------
+	
+	def create(self, cr, uid, vals, context={}):
+		vals['name'] = self._get_default_name(cr, uid, vals)
+		new_id = super(canvasssing_canvas, self).create(cr, uid, vals, context=context)
+	
+	def _get_default_name(self, cr, uid, vals):
+		prefix = "%s%s" % (datetime.today().strftime('%Y%m%d'), vals.get('driver1_id').name)
+		canvas_ids = self.search(cr, uid, [('name','=like',prefix+'%')], order='request_date DESC, name DESC')
+		if len(canvas_ids) == 0:
+			last_number = 1
+		else:
+			canvas_data = self.browse(cr, uid, canvas_ids[0])
+			last_number = int(canvas_data.name[-4:]) + 1
+		return "%s%04d" % (prefix,last_number)
 
 # ACTIONS ------------------------------------------------------------------------------------------------------------------
 	
