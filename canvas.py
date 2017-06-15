@@ -100,7 +100,7 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
-		'deliver_amount': fields.float('Delivery Amount'),
+		'delivery_amount': fields.float('Delivery Amount'),
 		'delivery_fee_invoice_id': fields.many2one('account.invoice', 'Delivery Fee Invoice',
 			readonly=True, domain=[('state', '!=', 'done')]),
 		'notes': fields.text('Notes'),

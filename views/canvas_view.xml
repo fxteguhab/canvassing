@@ -32,9 +32,9 @@
 									<field name="address"/>
 									<field name="is_executed"/>
 									<field name="distance"/>
-									<field name="deliver_amount"/>
-									<field name="delivery_fee_invoice_id"/>
-									<field name="notes"/>
+									<field name="delivery_amount"/>
+									<field name="delivery_fee_invoice_id" />
+									<field name="notes" attrs="{'required': [('is_executed','=',False)]}"/>
 								</tree>
 							</field>
 						</page>
@@ -45,7 +45,7 @@
 									<field name="address"/>
 									<field name="is_executed"/>
 									<field name="distance"/>
-									<field name="notes"/>
+									<field name="notes" attrs="{'required': [('is_executed','=',False)]}"/>
 								</tree>
 							</field>
 						</page>
