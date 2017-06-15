@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_purchase_needs_document">
+			<t t-call="report.external_layout">
+				<div class="page">
+					<div class="oe_structure"/>
+
+					<h2>Purchase Needs</h2>
+
+					<div class="row mt32 mb32">
+						<div class="col-xs-3">
+							<strong>Target Date:</strong>
+							<p t-field="o.target_date"/>
+						</div>
+						<div class="col-xs-3">
+							<strong>Supplier:</strong>
+							<p t-field="o.supplier_id"/>
+						</div>
+						<div class="col-xs-3">
+							<strong>Selection Rate:</strong>
+							<p>
+								<span t-field="o.selection_rate"/>
+								%
+							</p>
+						</div>
+					</div>
+
+					<table class="table table-condensed">
+						<thead>
+							<tr>
+								<th>
+									<strong>Product</strong>
+								</th>
+								<th class="text-right">
+									<strong>Quantity</strong>
+								</th>
+								<th>
+									<strong>Selected</strong>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="o.need_line_ids" t-as="line">
+								<td>
+									<span t-field="line.product_id"/>
+								</td>
+								<td class="text-right">
+									<span t-field="line.qty"/>
+								</td>
+								<td>
+									<span t-if="line.is_selected">Yes</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</t>
+		</template>
+
+		<template id="report_purchase_needs">
+			<t t-call="report.html_container">
+				<t t-foreach="doc_ids" t-as="doc_id">
+					<t t-raw="translate_doc(doc_id, doc_model, 'create_uid.lang', 'purchase_needs.report_purchase_needs_document')"/>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

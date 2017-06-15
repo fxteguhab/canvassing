@@ -1,0 +1,33 @@
+<openerp>
+	<data>
+		<record id="purchase_needs_algorithm_action" model="ir.actions.act_window">
+			<field name="name">Need Algorithms</field>
+			<field name="res_model">purchase.needs.algorithm</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<record id="purchase_needs_action" model="ir.actions.act_window">
+			<field name="name">New PO from Needs</field>
+			<field name="res_model">purchase.needs</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="view_id" ref="purchase_needs_form_create"/>
+		</record>
+		<record id="purchase_needs_needs_selection_rate_action" model="ir.actions.act_window">
+			<field name="name">Needs Selection Rate</field>
+			<field name="res_model">purchase.needs</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">graph</field>
+		</record>
+
+		<menuitem sequence="0" id="purchase_needs.purchase_needs_menu_purchase_needs"
+				  parent="purchase.menu_procurement_management" action="purchase_needs.purchase_needs_action"/>
+		<menuitem sequence="1" id="purchase_needs.purchase_needs_menu_purchase_needs_algorithm"
+				  parent="purchase.menu_purchase_config_purchase"
+				  action="purchase_needs.purchase_needs_algorithm_action"/>
+		<menuitem sequence="1" id="purchase_needs.purchase_needs_menu_needs_selection_rate"
+				  parent="base.next_id_73"
+				  action="purchase_needs.purchase_needs_needs_selection_rate_action"/>
+	</data>
+</openerp>

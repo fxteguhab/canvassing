@@ -1,0 +1,162 @@
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="purchase_needs_report_needs_selection_rate_graph">
+			<field name="name">purchase.needs.report.needs.selection.rate.graph</field>
+			<field name="model">purchase.needs</field>
+			<field name="type">graph</field>
+			<field name="arch" type="xml">
+				<graph name="needs" type="pivot">
+					<field name="algorithm_id" type="row"/>
+					<field name="selected" type="measure"/>
+					<field name="unselected" type="measure"/>
+					<field name="total" type="measure"/>
+					<field name="selection_rate" type="measure"/>
+				</graph >
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_form">
+			<field name="name">purchase.needs.form</field>
+			<field name="model">purchase.needs</field>
+			<field name="arch" type="xml">
+				<form string="Needs" version="7.0">
+					<sheet>
+						<group col="4">
+							<group>
+								<field name="target_date"/>
+								<label for="supplier_id"/>
+								<div>
+									<field name="supplier_id" on_change="action_generate_needs(supplier_id)"/>
+								</div>
+								<field name="algorithm_id"/>
+							</group>
+							<group>
+								<field name="selection_rate" widget="progressbar" invisible="True"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Need Lines">
+								<field name="need_line_ids">
+									<tree editable="bottom">
+										<field name="product_id"/>
+										<field name="qty"/>
+										<field name="is_selected"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_form_create">
+			<field name="name">purchase.needs.form.create</field>
+			<field name="model">purchase.needs</field>
+			<field name="arch" type="xml">
+				<form string="Needs" version="7.0">
+					<sheet>
+						<group col="4">
+							<group>
+								<field name="target_date"/>
+								<label for="supplier_id"/>
+								<div>
+									<field name="supplier_id" on_change="action_generate_needs(supplier_id)"/>
+								</div>
+							</group>
+							<group>
+								<field name="selection_rate" widget="progressbar" invisible="True"/>
+								<field name="algorithm_id" invisible="True"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Need Lines">
+								<field name="need_line_ids">
+									<tree editable="bottom">
+										<field name="product_id"/>
+										<field name="qty"/>
+										<field name="is_selected"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+						<footer>
+							<button name="action_generate_po" type="object" string="Save"
+									help="Generate Purchase Order from this Purchase Need" class="oe_highlight"/>
+							or
+							<button string="Cancel" class="oe_link" special="cancel"/>
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_tree">
+			<field name="name">purchase.needs.tree</field>
+			<field name="model">purchase.needs</field>
+			<field name="arch" type="xml">
+				<tree string="Puchase Needs" version="7.0">
+					<field name="supplier_id"/>
+					<field name="target_date"/>
+					<field name="selection_rate" widget="progressbar"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_algorithm_form">
+			<field name="name">purchase.needs.algorithm.form</field>
+			<field name="model">purchase.needs.algorithm</field>
+			<field name="arch" type="xml">
+				<form string="Need Algorithm" version="7.0">
+					<group col="2">
+						<group>
+							<field name="name"/>
+							<field name="is_used"/>
+							<field name="algorithm"/>
+						</group>
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_algorithm_tree">
+			<field name="name">purchase.needs.algorithm.tree</field>
+			<field name="model">purchase.needs.algorithm</field>
+			<field name="arch" type="xml">
+				<tree string="Algorithm" version="7.0">
+					<field name="name"/>
+					<field name="is_used"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_line_form">
+			<field name="name">purchase.needs.line.form</field>
+			<field name="model">purchase.needs.line</field>
+			<field name="arch" type="xml">
+				<form string="Algorithm" version="7.0">
+					<group col="2">
+						<group>
+							<field name="product_id"/>
+							<field name="qty"/>
+							<field name="is_selected"/>
+						</group>
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="purchase_needs_line_tree">
+			<field name="name">purchase.needs.line.tree</field>
+			<field name="model">purchase.needs.line</field>
+			<field name="arch" type="xml">
+				<tree string="Algorithm" version="7.0">
+					<field name="product_id"/>
+					<field name="qty"/>
+					<field name="is_selected"/>
+				</tree>
+			</field>
+		</record>
+		
+	</data>
+</openerp>
