@@ -10,7 +10,7 @@ class canvasssing_canvas(osv.Model):
 	_name = 'canvassing.canvas'
 	_description = 'Canvas'
 
-	# COLUMNS ---------------------------------------------------------------------------------------------------------------
+# COLUMNS -------------------------------------------------------------------------------------------------------------------
 
 	_columns = {
 		'name': fields.char('Name', required=True),
