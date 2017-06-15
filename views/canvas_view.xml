@@ -25,28 +25,34 @@
 					<notebook>
 						<page string="Stock Pickings">
 							<field name="canvas_stock_line">
-								<field name="stock_picking_id"/>
-								<field name="address"/>
-								<field name="is_executed"/>
-								<field name="distance"/>
-								<field name="deliver_amount"/>
-								<field name="delivery_fee_invoice_id"/>
-								<field name="notes"/>
+								<tree>
+									<field name="stock_picking_id"/>
+									<field name="address"/>
+									<field name="is_executed"/>
+									<field name="distance"/>
+									<field name="deliver_amount"/>
+									<field name="delivery_fee_invoice_id"/>
+									<field name="notes"/>
+								</tree>
 							</field>
 						</page>
 						<page string="Invoices">
 							<field name="canvas_invoice_line">
-								<field name="invoice_id"/>
-								<field name="address"/>
-								<field name="is_executed"/>
-								<field name="distance"/>
-								<field name="notes"/>
+								<tree>
+									<field name="invoice_id"/>
+									<field name="address"/>
+									<field name="is_executed"/>
+									<field name="distance"/>
+									<field name="notes"/>
+								</tree>
 							</field>
 						</page>
 						<page string="Trip Expenses">
 							<field name="trip_expense">
-								<field name="product_id"/>
-								<field name="amount"/>
+								<tree>
+									<field name="product_id"/>
+									<field name="amount"/>
+								</tree>
 							</field>
 						</page>
 					</notebook>
