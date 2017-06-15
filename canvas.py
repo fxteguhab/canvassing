@@ -97,7 +97,7 @@ class canvasssing_canvas_stock_line(osv.Model):
 	_columns = {
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
 		'stock_picking_id': fields.many2one('stock.picking', 'Stock Picking', domain=[('state', '!=', 'done')]),
-		'address': fields.text('Name', required=True),
+		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
 		'deliver_amount': fields.float('Delivery Amount'),
@@ -120,7 +120,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 	_columns = {
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
 		'invoice_id': fields.many2one('account.invoice', 'Invoice'),
-		'address': fields.text('Name', required=True),
+		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
 		'notes': fields.text('Notes'),
