@@ -6,7 +6,7 @@
 			<field name="view_type">form</field>
 		</record>
 
-		<menuitem action="canvassing_action" parent="fleet_vehicles" id="fleet_vehicle_canvasssing_menu" />
+		<menuitem action="canvassing_action" parent="fleet.fleet_vehicles" id="fleet_vehicle_canvasssing_menu" />
 
 	</data>
 </openerp>
