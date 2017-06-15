@@ -17,6 +17,8 @@
 	'data': [
 		'views/canvas_view.xml',
 		'menu/canvas_menu.xml',
+		'report/documents/canvassing_manifest.xml',
+		'report/canvassing_report.xml',
 	],
 	'demo': [
 	],

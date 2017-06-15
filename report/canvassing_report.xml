@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<report string="Manifest" id="action_report_canvassing_manifest" model="canvassing.canvas" report_type="qweb-pdf"
+				name="canvassing.report_canvassing_manifest" file="canvassing.report_canvassing_manifest"/>
+	</data>
+</openerp>
