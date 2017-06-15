@@ -1,12 +1,20 @@
 <openerp>
 	<data>
-		<record id="canvassing_action" model="ir.actions.act_window">
+		<record id="canvassing_canvas_action" model="ir.actions.act_window">
 			<field name="name">Canvassing</field>
 			<field name="res_model">canvassing.canvas</field>
 			<field name="view_type">form</field>
 		</record>
 
-		<menuitem action="canvassing_action" parent="fleet.fleet_vehicles" id="fleet_vehicle_canvasssing_menu" />
+		<record id="canvassing_canvas_expense_action" model="ir.actions.act_window">
+			<field name="name">Canvassing Expense</field>
+			<field name="res_model">canvassing.canvas.expense</field>
+			<field name="view_type">form</field>
+		</record>
+
+		<menuitem name="Canvassing" sequence="1" parent="fleet.menu_root" id="canvassing_menu"/>
+			<menuitem action="canvassing_canvas_action" parent="canvassing_menu" id="canvasssing_canvas_menu"/>
+			<menuitem action="canvassing_canvas_expense_action" parent="canvassing_menu" id="canvasssing_canvas_expense_menu"/>
 
 	</data>
 </openerp>

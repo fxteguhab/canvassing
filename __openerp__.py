@@ -15,7 +15,7 @@
 	],
 	'sequence': 150,
 	'data': [
-		'views/canvas.xml',
+		'views/canvas_view.xml',
 		'menu/canvas_menu.xml',
 	],
 	'demo': [
