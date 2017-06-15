@@ -27,10 +27,10 @@ class canvasssing_canvas(osv.Model):
 		'driver1': fields.many2one('hr.employee', 'Driver 1'),
 		'driver2': fields.many2one('hr.employee', 'Driver 2'),
 		'state': fields.selection(_CANVAS_STATE, 'State', readonly=True),
-		'trip_expense': fields.one2many('canvas.expense', 'canvas_id', 'Trip Expense'),
+		'trip_expense': fields.one2many('canvassing.canvas.expense', 'canvas_id', 'Trip Expense'),
 		'fleet_vehicle': fields.many2one('fleet.vehicle', 'Vehicle'),
-		'canvas_stock_line': fields.one2many('canvas.stock.line', 'canvas_id', 'Stock Line'),
-		'canvas_invoice_line': fields.one2many('canvas.invoice.line', 'canvas_id', 'Invoice Line'),
+		'canvas_stock_line': fields.one2many('canvassing.canvas.stock.line', 'canvas_id', 'Stock Line'),
+		'canvas_invoice_line': fields.one2many('canvassing.canvas.invoice.line', 'canvas_id', 'Invoice Line'),
 	}
 	
 # DEFAULTS ------------------------------------------------------------------------------------------------------------------
