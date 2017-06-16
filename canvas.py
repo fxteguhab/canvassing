@@ -130,6 +130,8 @@ class canvasssing_canvas(osv.Model):
 					canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
 						'delivery_fee_invoice_id': new_invoice_id,
 					}, context=context)
+				# Transfer pickings
+					stock_line.stock_picking_id.do_transfer()
 		# PAY INVOICE
 			model, journal_id = model_obj.get_object_reference(cr, uid, 'account', 'data_account_type_cash')
 			for invoice_line in canvas_data.invoice_line_ids:
