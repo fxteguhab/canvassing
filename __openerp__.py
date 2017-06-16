@@ -16,6 +16,7 @@
 	'sequence': 150,
 	'data': [
 		'views/canvas_view.xml',
+		'data/product_data.xml',
 		'menu/canvas_menu.xml',
 		'report/documents/canvassing_manifest.xml',
 		'report/canvassing_report.xml',

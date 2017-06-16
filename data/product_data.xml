@@ -1,0 +1,13 @@
+<openerp>
+	<data>
+
+		<record model="product.product" id="canvassing_product_delivery_fee">
+			<field name="name">Delivery Fee</field>
+			<field name="sale_ok">False</field>
+			<field name="hr_expense_ok">False</field>
+			<field name="purchase_ok">False</field>
+			<field name="type">service</field>
+		</record>
+
+	</data>
+</openerp>

@@ -66,6 +66,12 @@ class canvasssing_canvas(osv.Model):
 			}, context=context)
 	
 	def action_set_finish(self, cr, uid, ids, context={}):
+		model_obj = self.pool.get('ir.model.data')
+		invoice_obj = self.pool.get('account.invoice')
+		invoice_line_obj = self.pool.get('account.invoice.line')
+		expense_obj = self.pool.get('hr.expense.expense')
+		expense_line_obj = self.pool.get('hr.expense.line')
+		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
 		for canvas_data in self.browse(cr, uid, ids):
 		# Cek minimal harus ada satu line yg is_executed nya true. Dan kl is_executed nya false, dia harus ada notes nya.
 			valid = False
@@ -86,9 +92,7 @@ class canvasssing_canvas(osv.Model):
 				}, context=context)
 			else:
 				raise osv.except_osv(_('Invoice Line Error'),_('You must have at least one line executed.'))
-		#CREATE EXPENSE
-			expense_obj = self.pool.get('hr.expense.expense')
-			expense_line_obj = self.pool.get('hr.expense.line')
+		# CREATE EXPENSE
 			new_expense_id = expense_obj.create(cr, uid, {
 				'employee_id': canvas_data.driver1_id.id,
 				'date': canvas_data.date_delivered,
@@ -104,6 +108,27 @@ class canvasssing_canvas(osv.Model):
 					'unit_amount': expense_line.amount,
 					'unit_quantity': 1.0,
 				})
+		# CREATE ONGKIR
+			for stock_line in canvas_data.stock_line_ids:
+				if stock_line.is_executed:
+					new_invoice_id = invoice_obj.create(cr, uid, {
+						'partner_id': stock_line.stock_picking_id.partner_id.id,
+						'date_invoice': canvas_data.date_delivered,
+						'account_id': stock_line.stock_picking_id.partner_id.property_account_receivable.id,
+						'fiscal_position': stock_line.stock_picking_id.partner_id.property_account_position.id,
+					})
+					model, product_id = model_obj.get_object_reference(cr, uid, 'canvassing', 'canvassing_product_delivery_fee')
+					invoice_line_obj.create(cr, uid, {
+						'invoice_id': new_invoice_id,
+						'product_id': product_id,
+						'name': canvas_data.name,
+						'price_unit': stock_line.delivery_amount,
+						'quantity': 1.0,
+					})
+					canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
+						'delivery_fee_invoice_id': new_invoice_id,
+					}, context=context)
+			
 
 # ===========================================================================================================================
 
