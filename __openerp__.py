@@ -11,7 +11,7 @@
 	'depends': [
 		"base", "board", "web", "website",
 		"chjs_custom_view",
-		"stock", "account",
+		"stock", "account", "fleet", "hr",
 	],
 	'sequence': 150,
 	'data': [
