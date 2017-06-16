@@ -130,6 +130,7 @@ class canvasssing_canvas(osv.Model):
 						'delivery_fee_invoice_id': new_invoice_id,
 					}, context=context)
 		# PAY INVOICE
+			model, journal_id = model_obj.get_object_reference(cr, uid, 'account', 'data_account_type_cash')
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
 					inv = invoice_line.invoice_id
@@ -137,8 +138,9 @@ class canvasssing_canvas(osv.Model):
 						'partner_id': inv.partner_id.id,
 						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
 						'account_id': inv.account_id.id,
+						'journal_id': journal_id,
 					})
-					voucher_obj.button_proforma_voucher(cr, uid, [new_voucher_id])
+					voucher_obj.signal_workflow(cr, uid, [new_voucher_id], 'proforma_voucher')
 			
 
 # ===========================================================================================================================
