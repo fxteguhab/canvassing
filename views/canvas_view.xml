@@ -8,8 +8,10 @@
 				<form>
 					<header>
 						<field name="state" widget="statusbar" readonly="1"/>
-						<button name="action_set_on_the_way" string="On The Way" type="object" states="draft" class="oe_highlight" />
-						<button name="action_set_finish" string="Finish" type="object" states="on_the_way" class="oe_highlight" />
+						<button name="action_set_on_the_way" string="On The Way" type="object" states="draft"
+								class="oe_highlight"/>
+						<button name="action_set_finish" string="Finish" type="object" states="on_the_way"
+								class="oe_highlight"/>
 					</header>
 					<group col="4">
 						<group>
@@ -30,11 +32,15 @@
 								<tree version="7.0" editable="bottom">
 									<field name="stock_picking_id"/>
 									<field name="address"/>
-									<field name="is_executed"/>
 									<field name="distance"/>
 									<field name="delivery_amount"/>
-									<field name="delivery_fee_invoice_id" />
-									<field name="notes" attrs="{'required': [('is_executed','=',False)]}"/>
+									<field name="delivery_fee_invoice_id"/>
+									<field name="canvas_state"/>
+									<field name="is_executed"
+											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
+									<field name="notes"
+											attrs="{'required': [('is_executed','=',False),
+											('canvas_state', '=', 'on_the_way')]}"/>
 								</tree>
 							</field>
 						</page>
@@ -43,9 +49,13 @@
 								<tree version="7.0" editable="bottom">
 									<field name="invoice_id"/>
 									<field name="address"/>
-									<field name="is_executed"/>
 									<field name="distance"/>
-									<field name="notes" attrs="{'required': [('is_executed','=',False)]}"/>
+									<field name="canvas_state"/>
+									<field name="is_executed"
+											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
+									<field name="notes"
+											attrs="{'required': [('is_executed','=',False),
+											('canvas_state', '=', 'on_the_way')]}"/>
 								</tree>
 							</field>
 						</page>

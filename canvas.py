@@ -104,6 +104,7 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'delivery_fee_invoice_id': fields.many2one('account.invoice', 'Delivery Fee Invoice',
 			readonly=True, domain=[('state', '!=', 'done')]),
 		'notes': fields.text('Notes'),
+		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}
 
 # OVERRIDES -----------------------------------------------------------------------------------------------------------------
@@ -124,6 +125,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
 		'notes': fields.text('Notes'),
+		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}
 
 # ===========================================================================================================================
