@@ -70,6 +70,7 @@ class canvasssing_canvas(osv.Model):
 		invoice_obj = self.pool.get('account.invoice')
 		invoice_line_obj = self.pool.get('account.invoice.line')
 		voucher_obj = self.pool.get('account.voucher')
+		voucher_line_obj = self.pool.get('account.voucher.line')
 		expense_obj = self.pool.get('hr.expense.expense')
 		expense_line_obj = self.pool.get('hr.expense.line')
 		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
@@ -138,9 +139,10 @@ class canvasssing_canvas(osv.Model):
 						'partner_id': inv.partner_id.id,
 						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
 						'account_id': inv.account_id.id,
-						'journal_id': journal_id,
+						'journal_id': 8,
+						'type': 'receipt' if inv.type == 'out_invoice' else 'payment',
 					})
-					voucher_obj.signal_workflow(cr, uid, [new_voucher_id], 'proforma_voucher')
+					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
 			
 
 # ===========================================================================================================================
