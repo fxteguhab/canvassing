@@ -43,7 +43,7 @@ class canvasssing_canvas(osv.Model):
 	
 	def create(self, cr, uid, vals, context={}):
 		vals['name'] = self._get_default_name(cr, uid, vals)
-		new_id = super(canvasssing_canvas, self).create(cr, uid, vals, context=context)
+		return super(canvasssing_canvas, self).create(cr, uid, vals, context=context)
 	
 	def _get_default_name(self, cr, uid, vals):
 		prefix = "%s%s" % (datetime.today().strftime('%Y%m%d'), vals.get('driver1_id').name)
@@ -71,20 +71,38 @@ class canvasssing_canvas(osv.Model):
 			for stock_line in canvas_data.stock_line_ids:
 				if stock_line.is_executed:
 					valid = True
-				else:
-					if stock_line.notes == False or stock_line.notes == "":
-						raise osv.except_osv(_('Stock Line Error'),_('Please fill the notes why it is not executed.'))
+				elif stock_line.notes == False or stock_line.notes == "":
+					raise osv.except_osv(_('Stock Line Error'),_('Please fill the notes why it is not executed.'))
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
 					valid = True
-				else:
-					if invoice_line.notes == False or invoice_line.notes == "":
-						raise osv.except_osv(_('Invoice Line Error'),_('Please fill the notes why it is not executed.'))
+				elif invoice_line.notes == False or invoice_line.notes == "":
+					raise osv.except_osv(_('Invoice Line Error'),_('Please fill the notes why it is not executed.'))
 			if valid:
 				self.write(cr, uid, [canvas_data.id], {
 					'state': 'finished',
 					'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
 				}, context=context)
+			else:
+				raise osv.except_osv(_('Invoice Line Error'),_('You must have at least one line executed.'))
+		#CREATE EXPENSE
+			expense_obj = self.pool.get('hr.expense.expense')
+			expense_line_ids = []
+			for expense_line in canvas_data.trip_expense_ids:
+				expense_line_ids.append({
+					'product_id': expense_line.product_id.id,
+					'date_value': canvas_data.date_delivered,
+					'name': canvas_data.name,
+					'uom_id': expense_line.product_id.uom_id,
+					'unit_amount': expense_line.amount,
+					'unit_quantity': 1.0,
+				})
+			expense_obj.create(cr, uid, {
+				'employee_id': canvas_data.driver1_id.id,
+				'date': canvas_data.date_delivered,
+				'name': canvas_data.name,
+				'line_ids': expense_line_ids,
+			}, context=context)
 
 # ===========================================================================================================================
 
