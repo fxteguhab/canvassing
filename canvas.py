@@ -69,6 +69,7 @@ class canvasssing_canvas(osv.Model):
 		model_obj = self.pool.get('ir.model.data')
 		invoice_obj = self.pool.get('account.invoice')
 		invoice_line_obj = self.pool.get('account.invoice.line')
+		voucher_obj = self.pool.get('account.voucher')
 		expense_obj = self.pool.get('hr.expense.expense')
 		expense_line_obj = self.pool.get('hr.expense.line')
 		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
@@ -128,6 +129,16 @@ class canvasssing_canvas(osv.Model):
 					canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
 						'delivery_fee_invoice_id': new_invoice_id,
 					}, context=context)
+		# PAY INVOICE
+			for invoice_line in canvas_data.invoice_line_ids:
+				if invoice_line.is_executed:
+					inv = invoice_line.invoice_id
+					new_voucher_id = voucher_obj.create(cr, uid, {
+						'partner_id': inv.partner_id.id,
+						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
+						'account_id': inv.account_id.id,
+					})
+					voucher_obj.button_proforma_voucher(cr, uid, [new_voucher_id])
 			
 
 # ===========================================================================================================================
@@ -164,7 +175,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 	
 	_columns = {
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
-		'invoice_id': fields.many2one('account.invoice', 'Invoice'),
+		'invoice_id': fields.many2one('account.invoice', 'Invoice',  domain=[('state', '=', 'open')]),
 		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
