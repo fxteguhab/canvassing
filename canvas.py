@@ -46,8 +46,9 @@ class canvasssing_canvas(osv.Model):
 		return super(canvasssing_canvas, self).create(cr, uid, vals, context=context)
 	
 	def _get_default_name(self, cr, uid, vals):
-		prefix = "%s%s" % (datetime.today().strftime('%Y%m%d'), vals.get('driver1_id').name)
-		canvas_ids = self.search(cr, uid, [('name','=like',prefix+'%')], order='request_date DESC, name DESC')
+		driver_name = self.pool.get('hr.employee').browse(cr, uid, [vals.get('driver1_id')]).name
+		prefix = "%s%s" % (datetime.today().strftime('%Y%m%d'), driver_name)
+		canvas_ids = self.search(cr, uid, [('name','=like',prefix+'%')], order='name DESC')
 		if len(canvas_ids) == 0:
 			last_number = 1
 		else:
@@ -87,22 +88,22 @@ class canvasssing_canvas(osv.Model):
 				raise osv.except_osv(_('Invoice Line Error'),_('You must have at least one line executed.'))
 		#CREATE EXPENSE
 			expense_obj = self.pool.get('hr.expense.expense')
-			expense_line_ids = []
-			for expense_line in canvas_data.trip_expense_ids:
-				expense_line_ids.append({
-					'product_id': expense_line.product_id.id,
-					'date_value': canvas_data.date_delivered,
-					'name': canvas_data.name,
-					'uom_id': expense_line.product_id.uom_id,
-					'unit_amount': expense_line.amount,
-					'unit_quantity': 1.0,
-				})
-			expense_obj.create(cr, uid, {
+			expense_line_obj = self.pool.get('hr.expense.line')
+			new_expense_id = expense_obj.create(cr, uid, {
 				'employee_id': canvas_data.driver1_id.id,
 				'date': canvas_data.date_delivered,
 				'name': canvas_data.name,
-				'line_ids': expense_line_ids,
-			}, context=context)
+			})
+			for expense_line in canvas_data.trip_expense_ids:
+				expense_line_obj.create(cr, uid, {
+					'expense_id': new_expense_id,
+					'product_id': expense_line.product_id.id,
+					'date_value': canvas_data.date_delivered,
+					'name': canvas_data.name,
+					'uom_id': expense_line.product_id.uom_id.id,
+					'unit_amount': expense_line.amount,
+					'unit_quantity': 1.0,
+				})
 
 # ===========================================================================================================================
 
@@ -154,7 +155,7 @@ class canvasssing_canvas_expense(osv.Model):
 	
 	_columns = {
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
-		'product_id': fields.many2one('product.product', 'Expense', domain=[('is_expense', '=', True)]),
+		'product_id': fields.many2one('product.product', 'Expense', domain=[('hr_expense_ok', '=', True)]),
 		'amount': fields.float('Amount'),
 	}
 

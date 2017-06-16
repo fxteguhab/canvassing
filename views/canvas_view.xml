@@ -7,7 +7,7 @@
 			<field name="arch" type="xml">
 				<form>
 					<header>
-						<field name="state" widget="statusbar" readonly="1"/>
+						<field name="state" widget="statusbar" readonly="1" clickable="1"/>
 						<button name="action_set_on_the_way" string="On The Way" type="object" states="draft" class="oe_highlight" />
 						<button name="action_set_finish" string="Finish" type="object" states="on_the_way" class="oe_highlight" />
 					</header>
