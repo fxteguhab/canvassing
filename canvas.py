@@ -143,8 +143,21 @@ class canvasssing_canvas(osv.Model):
 						'account_id': inv.account_id.id,
 						'journal_id': 8,
 						'type': 'receipt' if inv.type == 'out_invoice' else 'payment',
+						'reference': canvas_data.name,
 					})
 					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
+					voucher_data = voucher_obj.browse(cr, uid, new_voucher_id)
+					voucher_line_obj.create(cr, uid, {
+						'voucher_id': new_voucher_id,
+						'type': 'cr',
+						'account_id': inv.account_id.id,
+						'partner_id': inv.partner_id.id,
+						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
+						'move_line_id': voucher_data.move_ids[0].id,
+					})
+					invoice_obj.write(cr, uid, [inv.id], {
+						'state': 'paid'
+					})
 			
 
 # ===========================================================================================================================
