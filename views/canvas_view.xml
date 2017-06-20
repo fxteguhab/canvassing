@@ -28,36 +28,10 @@
 					</group>
 					<notebook>
 						<page string="Stock Pickings">
-							<field name="stock_line_ids">
-								<tree version="7.0" editable="bottom">
-									<field name="stock_picking_id"/>
-									<field name="address"/>
-									<field name="distance"/>
-									<field name="delivery_amount"/>
-									<field name="delivery_fee_invoice_id"/>
-									<field name="canvas_state"/>
-									<field name="is_executed"
-											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-									<field name="notes"
-											attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
-								</tree>
-							</field>
+							<field name="stock_line_ids"></field>
 						</page>
 						<page string="Invoices">
-							<field name="invoice_line_ids">
-								<tree version="7.0" editable="bottom">
-									<field name="invoice_id"/>
-									<field name="address"/>
-									<field name="distance"/>
-									<field name="canvas_state"/>
-									<field name="is_executed"
-											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-									<field name="notes"
-											attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
-								</tree>
-							</field>
+							<field name="invoice_line_ids"></field>
 						</page>
 						<page string="Trip Expenses">
 							<field name="trip_expense_ids">
@@ -114,6 +88,46 @@
 					<field name="canvas_id"/>
 					<field name="product_id"/>
 					<field name="amount"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="canvassing_canvas_stock_line_tree">
+			<field name="name">canvassing.canvas.stock.line.tree</field>
+			<field name="model">canvassing.canvas.stock.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree editable="bottom">
+					<field name="stock_picking_id"/>
+					<field name="address"/>
+					<field name="distance"/>
+					<field name="delivery_amount"/>
+					<field name="delivery_fee_invoice_id"/>
+					<field name="canvas_state"/>
+					<field name="is_executed"
+							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
+					<field name="notes"
+							attrs="{'required': [('is_executed','=',False),
+											('canvas_state', '=', 'on_the_way')]}"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="canvassing_canvas_invoice_line_tree">
+			<field name="name">canvassing.canvas.invoice.line.tree</field>
+			<field name="model">canvassing.canvas.invoice.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree editable="bottom">
+					<field name="invoice_id"/>
+					<field name="address"/>
+					<field name="distance"/>
+					<field name="canvas_state"/>
+					<field name="is_executed"
+							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
+					<field name="notes"
+							attrs="{'required': [('is_executed','=',False),
+											('canvas_state', '=', 'on_the_way')]}"/>
 				</tree>
 			</field>
 		</record>
