@@ -144,6 +144,9 @@ class canvasssing_canvas(osv.Model):
 						'journal_id': 8,
 						'type': 'receipt' if inv.type == 'out_invoice' else 'payment',
 						'reference': canvas_data.name,
+						'date': canvas_data.date_delivered,
+						'pay_now': 'pay_now',
+						'date_due': canvas_data.date_delivered,
 					})
 					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
 					voucher_data = voucher_obj.browse(cr, uid, new_voucher_id)
@@ -156,7 +159,7 @@ class canvasssing_canvas(osv.Model):
 						'move_line_id': voucher_data.move_ids[0].id,
 					})
 					invoice_obj.write(cr, uid, [inv.id], {
-						'state': 'paid'
+						'payment_ids': [voucher_data.move_ids[0].id],
 					})
 			
 
