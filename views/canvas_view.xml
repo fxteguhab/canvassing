@@ -16,9 +16,9 @@
 					<group col="4">
 						<group>
 							<field name="name"/>
-							<field name="fleet_vehicle_id"/>
-							<field name="driver1_id"/>
-							<field name="driver2_id"/>
+							<field name="fleet_vehicle_id" attrs="{'readonly': [('state', '=', 'finished')]}"/>
+							<field name="driver1_id" attrs="{'readonly': [('state', '=', 'finished')]}"/>
+							<field name="driver2_id" attrs="{'readonly': [('state', '=', 'finished')]}"/>
 						</group>
 						<group>
 							<field name="date_created"/>
@@ -28,13 +28,13 @@
 					</group>
 					<notebook>
 						<page string="Stock Pickings">
-							<field name="stock_line_ids"></field>
+							<field name="stock_line_ids" attrs="{'readonly': [('state', '=', 'finished')]}"></field>
 						</page>
 						<page string="Invoices">
-							<field name="invoice_line_ids"></field>
+							<field name="invoice_line_ids" attrs="{'readonly': [('state', '=', 'finished')]}"></field>
 						</page>
 						<page string="Trip Expenses">
-							<field name="trip_expense_ids">
+							<field name="trip_expense_ids" attrs="{'readonly': [('state', '=', 'finished')]}">
 								<tree version="7.0" editable="bottom">
 									<field name="product_id"/>
 									<field name="amount"/>
@@ -103,7 +103,7 @@
 					<field name="distance"/>
 					<field name="delivery_amount"/>
 					<field name="delivery_fee_invoice_id"/>
-					<field name="canvas_state"/>
+					<field name="canvas_state" invisible="1"/>
 					<field name="is_executed"
 							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
 					<field name="notes"
@@ -122,7 +122,7 @@
 					<field name="invoice_id"/>
 					<field name="address"/>
 					<field name="distance"/>
-					<field name="canvas_state"/>
+					<field name="canvas_state" invisible="1"/>
 					<field name="is_executed"
 							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
 					<field name="notes"

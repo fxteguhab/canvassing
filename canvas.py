@@ -26,7 +26,7 @@ class canvasssing_canvas(osv.Model):
 		'date_delivered': fields.datetime('Date Delivered', readonly=True),
 		'driver1_id': fields.many2one('hr.employee', 'Driver 1', required=True),
 		'driver2_id': fields.many2one('hr.employee', 'Driver 2'),
-		'fleet_vehicle_id': fields.many2one('fleet.vehicle', 'Vehicle'),
+		'fleet_vehicle_id': fields.many2one('fleet.vehicle', 'Vehicle', required=True),
 		'trip_expense_ids': fields.one2many('canvassing.canvas.expense', 'canvas_id', 'Trip Expense'),
 		'stock_line_ids': fields.one2many('canvassing.canvas.stock.line', 'canvas_id', 'Stock Line'),
 		'invoice_line_ids': fields.one2many('canvassing.canvas.invoice.line', 'canvas_id', 'Invoice Line'),
