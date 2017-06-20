@@ -137,30 +137,42 @@ class canvasssing_canvas(osv.Model):
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
 					inv = invoice_line.invoice_id
+					move_line_id = 0
+					for move_line in inv.move_id.line_id:	#TODO: Apa ada bedanya ya misal suatu ketika dia ngeceknya kalo creditnya yg 0 bukan debit? Atau milih linenya ada cara lain?
+						move_line_id = move_line.id if move_line.debit == 0 else move_line_id
 					new_voucher_id = voucher_obj.create(cr, uid, {
 						'partner_id': inv.partner_id.id,
 						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
 						'account_id': inv.account_id.id,
-						'journal_id': 8,
+						'journal_id': 8,		# TODO: EIGHT
 						'type': 'receipt' if inv.type == 'out_invoice' else 'payment',
 						'reference': canvas_data.name,
 						'date': canvas_data.date_delivered,
 						'pay_now': 'pay_now',
 						'date_due': canvas_data.date_delivered,
+						'line_dr_ids': [(0, False, {
+							'type': 'dr',		# TODO: Dr atau cr taunya gimana?
+							'account_id': inv.account_id.id,
+							'partner_id': inv.partner_id.id,
+							'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
+							'move_line_id': move_line_id,
+							'reconcile': True,
+						})]
 					})
 					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
-					voucher_data = voucher_obj.browse(cr, uid, new_voucher_id)
-					voucher_line_obj.create(cr, uid, {
-						'voucher_id': new_voucher_id,
-						'type': 'cr',
-						'account_id': inv.account_id.id,
-						'partner_id': inv.partner_id.id,
-						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
-						'move_line_id': voucher_data.move_ids[0].id,
-					})
-					invoice_obj.write(cr, uid, [inv.id], {
-						'state': 'paid',
-					})
+					# voucher_data = voucher_obj.browse(cr, uid, new_voucher_id)
+					# voucher_line_id = voucher_line_obj.create(cr, uid, {
+					# 	'voucher_id': new_voucher_id,
+					# 	'type': 'dr',
+					# 	'account_id': inv.account_id.id,
+					# 	'partner_id': inv.partner_id.id,
+					# 	'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
+					# 	'move_line_id': voucher_data.move_ids[0].id,
+					# 	'reconcile': True
+					# })
+					# invoice_obj.write(cr, uid, [inv.id], {
+					# 	'state': 'paid',
+					# })
 			
 
 # ===========================================================================================================================
