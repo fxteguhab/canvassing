@@ -159,7 +159,7 @@ class canvasssing_canvas(osv.Model):
 						'move_line_id': voucher_data.move_ids[0].id,
 					})
 					invoice_obj.write(cr, uid, [inv.id], {
-						'payment_ids': [voucher_data.move_ids[0].id],
+						'state': 'paid',
 					})
 			
 
