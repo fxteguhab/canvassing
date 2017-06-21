@@ -133,25 +133,27 @@ class canvasssing_canvas(osv.Model):
 				# Transfer pickings
 					stock_line.stock_picking_id.do_transfer()
 		# PAY INVOICE
-			model, journal_id = model_obj.get_object_reference(cr, uid, 'account', 'data_account_type_cash')
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
 					inv = invoice_line.invoice_id
 					move_line_id = 0
-					for move_line in inv.move_id.line_id:	#TODO: Apa ada bedanya ya misal suatu ketika dia ngeceknya kalo creditnya yg 0 bukan debit? Atau milih linenya ada cara lain?
-						move_line_id = move_line.id if move_line.debit == 0 else move_line_id
+					for move_line in inv.move_id.line_id:
+						if inv.type == 'in_invoice':
+							move_line_id = move_line.id if move_line.debit == 0 else move_line_id
+						else:
+							move_line_id = move_line.id if move_line.credit == 0 else move_line_id
 					new_voucher_id = voucher_obj.create(cr, uid, {
 						'partner_id': inv.partner_id.id,
 						'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
 						'account_id': inv.account_id.id,
-						'journal_id': 8,		# TODO: EIGHT
+						'journal_id': invoice_line.journal_id.id,
 						'type': 'receipt' if inv.type == 'out_invoice' else 'payment',
 						'reference': canvas_data.name,
 						'date': canvas_data.date_delivered,
 						'pay_now': 'pay_now',
 						'date_due': canvas_data.date_delivered,
 						'line_dr_ids': [(0, False, {
-							'type': 'dr',		# TODO: Dr atau cr taunya gimana?
+							'type': 'dr' if inv.type == 'in_invoice' else 'cr',
 							'account_id': inv.account_id.id,
 							'partner_id': inv.partner_id.id,
 							'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
@@ -160,19 +162,6 @@ class canvasssing_canvas(osv.Model):
 						})]
 					})
 					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
-					# voucher_data = voucher_obj.browse(cr, uid, new_voucher_id)
-					# voucher_line_id = voucher_line_obj.create(cr, uid, {
-					# 	'voucher_id': new_voucher_id,
-					# 	'type': 'dr',
-					# 	'account_id': inv.account_id.id,
-					# 	'partner_id': inv.partner_id.id,
-					# 	'amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
-					# 	'move_line_id': voucher_data.move_ids[0].id,
-					# 	'reconcile': True
-					# })
-					# invoice_obj.write(cr, uid, [inv.id], {
-					# 	'state': 'paid',
-					# })
 			
 
 # ===========================================================================================================================
@@ -211,10 +200,17 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
 		'invoice_id': fields.many2one('account.invoice', 'Invoice',  domain=[('state', '=', 'open')]),
 		'address': fields.text('Address', required=True),
+		'journal_id': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', '=', 'cash')]),
 		'is_executed': fields.boolean('Is Executed'),
 		'distance': fields.float('Distance'),
 		'notes': fields.text('Notes'),
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
+	}
+	
+# DEFAULTS ------------------------------------------------------------------------------------------------------------------
+	
+	_defaults = {
+		'journal_id': lambda self, cr, uid, *a: self.pool.get('account.journal').search(cr, uid, [('type', '=', 'cash')])[0]
 	}
 
 # ===========================================================================================================================
