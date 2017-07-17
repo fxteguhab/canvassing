@@ -47,14 +47,14 @@ class canvasssing_canvas(osv.Model):
 	
 	def _get_default_name(self, cr, uid, vals):
 		driver_name = self.pool.get('hr.employee').browse(cr, uid, [vals.get('driver1_id')]).name
-		prefix = "%s%s" % (datetime.today().strftime('%Y%m%d'), driver_name)
+		prefix = "%s %s" % (datetime.today().strftime('%Y%m%d'), driver_name)
 		canvas_ids = self.search(cr, uid, [('name','=like',prefix+'%')], order='name DESC')
 		if len(canvas_ids) == 0:
 			last_number = 1
 		else:
 			canvas_data = self.browse(cr, uid, canvas_ids[0])
 			last_number = int(canvas_data.name[-4:]) + 1
-		return "%s%04d" % (prefix,last_number)
+		return "%s %04d" % (prefix,last_number)
 
 # ACTIONS ------------------------------------------------------------------------------------------------------------------
 	
