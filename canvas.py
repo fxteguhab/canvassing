@@ -185,9 +185,31 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}
 
-# OVERRIDES -----------------------------------------------------------------------------------------------------------------
-
-
+# ONCHANGE ------------------------------------------------------------------------------------------------------------------
+	
+	def onchange_stock_picking(self, cr, uid, ids, stock_picking_id, context=None):
+		result = {}
+		result['value'] = {}
+		if stock_picking_id:
+			try:
+				stock_picking_obj = self.pool.get('stock.picking')
+				stock_picking = stock_picking_obj.browse(cr, uid, stock_picking_id)
+				if stock_picking:
+					result['value'].update({
+						'address': stock_picking.partner_id.contact_address.replace('\n',' ')
+					})
+			except Exception, e:
+				result['value'].update({
+					'address': '',
+				})
+				result['warning'] = {
+					'title': e.name,
+					'message': e.value,
+				}
+			finally:
+				return result
+		return result
+	
 # ===========================================================================================================================
 
 class canvasssing_canvas_invoice_line(osv.Model):

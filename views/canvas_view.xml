@@ -30,7 +30,7 @@
 						<page string="Stock Pickings">
 							<field name="stock_line_ids" attrs="{'readonly': [('state', '=', 'finished')]}">
 								<tree version="7.0" editable="bottom">
-									<field name="stock_picking_id" options="{'no_quick_create':True, 'no_create_edit':True}"/>
+									<field name="stock_picking_id" options="{'no_quick_create':True, 'no_create_edit':True}"  on_change="onchange_stock_picking(stock_picking_id)"/>
 									<field name="address"/>
 									<field name="distance"/>
 									<field name="delivery_amount"/>
