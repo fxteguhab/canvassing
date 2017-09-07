@@ -24,6 +24,7 @@
 							<field name="date_created"/>
 							<field name="date_depart"/>
 							<field name="date_delivered"/>
+							<field name="create_uid" readonly="1"/>
 						</group>
 					</group>
 					<notebook>
@@ -87,6 +88,7 @@
 					<field name="fleet_vehicle_id"/>
 					<field name="driver1_id"/>
 					<field name="driver2_id"/>
+					<field name="create_uid" readonly="1"/>
 				</tree>
 			</field>
 		</record>
