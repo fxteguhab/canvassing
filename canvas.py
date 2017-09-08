@@ -75,25 +75,16 @@ class canvasssing_canvas(osv.Model):
 		expense_line_obj = self.pool.get('hr.expense.line')
 		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
 		for canvas_data in self.browse(cr, uid, ids):
-		# Cek minimal harus ada satu line yg is_executed nya true. Dan kl is_executed nya false, dia harus ada notes nya.
-			valid = False
 			for stock_line in canvas_data.stock_line_ids:
-				if stock_line.is_executed:
-					valid = True
-				elif stock_line.notes == False or stock_line.notes == "":
-					raise osv.except_osv(_('Stock Line Error'),_('Please fill the notes why it is not executed.'))
+				if stock_line.notes is False or stock_line.notes == "":
+					raise osv.except_osv(_('Stock Line Error'), _('Please fill the notes why it is not executed.'))
 			for invoice_line in canvas_data.invoice_line_ids:
-				if invoice_line.is_executed:
-					valid = True
-				elif invoice_line.notes == False or invoice_line.notes == "":
-					raise osv.except_osv(_('Invoice Line Error'),_('Please fill the notes why it is not executed.'))
-			if valid:
-				self.write(cr, uid, [canvas_data.id], {
-					'state': 'finished',
-					'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-				}, context=context)
-			else:
-				raise osv.except_osv(_('Invoice Line Error'),_('You must have at least one line executed.'))
+				if invoice_line.notes is False or invoice_line.notes == "":
+					raise osv.except_osv(_('Invoice Line Error'), _('Please fill the notes why it is not executed.'))
+			self.write(cr, uid, [canvas_data.id], {
+				'state': 'finished',
+				'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+			}, context=context)
 		# CREATE EXPENSE
 			new_expense_id = expense_obj.create(cr, uid, {
 				'employee_id': canvas_data.driver1_id.id,
