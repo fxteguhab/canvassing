@@ -22,6 +22,8 @@
 		'report/documents/canvassing_manifest.xml',
 		'report/canvassing_report.xml',
 		'workflows/sale_workflow.xml',
+		'security/canvassing_security.xml',
+		'security/ir_rule.xml',
 	],
 	'demo': [
 	],

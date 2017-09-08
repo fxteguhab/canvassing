@@ -1,0 +1,26 @@
+<openerp>
+	<data>
+		<record id="canvassing_own_lead" model="ir.rule">
+			<field name="name">Canvassing: See Own Lead</field>
+			<field name="model_id" ref="model_canvassing_canvas"/>
+			<field name="global" eval="0"/>
+			<field name="groups" eval="[(4, ref('group_staff'))]"/>
+			<field name="domain_force">[('create_uid','=', user.id)]</field>
+			<field name="perm_read" eval="True"/>
+			<field name="perm_write" eval="True"/>
+			<field name="perm_create" eval="True"/>
+			<field name="perm_unlink" eval="True"/>
+		</record>
+		<record id="canvassing_all_lead" model="ir.rule">
+			<field name="name">Canvassing: See All Lead</field>
+			<field name="model_id" ref="model_canvassing_canvas"/>
+			<field name="global" eval="0"/>
+			<field name="groups" eval="[(4, ref('group_manager'))]"/>
+			<field name="domain_force" eval="[('1','=',1)]"/>
+			<field name="perm_read" eval="True"/>
+			<field name="perm_write" eval="True"/>
+			<field name="perm_create" eval="True"/>
+			<field name="perm_unlink" eval="True"/>
+		</record>
+	</data>
+</openerp>
