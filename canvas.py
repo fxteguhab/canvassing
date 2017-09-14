@@ -77,10 +77,10 @@ class canvasssing_canvas(osv.Model):
 		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
 		for canvas_data in self.browse(cr, uid, ids):
 			for stock_line in canvas_data.stock_line_ids:
-				if stock_line.notes is False or stock_line.notes == "":
+				if not stock_line.is_executed and (stock_line.notes is False or stock_line.notes == ""):
 					raise osv.except_osv(_('Stock Line Error'), _('Please fill the notes why it is not executed.'))
 			for invoice_line in canvas_data.invoice_line_ids:
-				if invoice_line.notes is False or invoice_line.notes == "":
+				if not invoice_line.is_executed and (invoice_line.notes is False or invoice_line.notes == ""):
 					raise osv.except_osv(_('Invoice Line Error'), _('Please fill the notes why it is not executed.'))
 			self.write(cr, uid, [canvas_data.id], {
 				'state': 'finished',

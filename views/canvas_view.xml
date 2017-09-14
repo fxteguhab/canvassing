@@ -39,9 +39,7 @@
 									<field name="canvas_state" invisible="True"/>
 									<field name="is_executed"
 											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-									<field name="notes"
-											attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
+									<field name="notes"/>
 								</tree>
 							</field>
 						</page>
@@ -55,9 +53,7 @@
 									<field name="canvas_state" invisible="True"/>
 									<field name="is_executed"
 											attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-									<field name="notes"
-											attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
+									<field name="notes"/>
 								</tree>
 							</field>
 						</page>
@@ -135,9 +131,7 @@
 					<field name="canvas_state" invisible="1"/>
 					<field name="is_executed"
 							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-					<field name="notes"
-							attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
+					<field name="notes"/>
 				</tree>
 			</field>
 		</record>
@@ -154,9 +148,7 @@
 					<field name="canvas_state" invisible="1"/>
 					<field name="is_executed"
 							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
-					<field name="notes"
-							attrs="{'required': [('is_executed','=',False),
-											('canvas_state', '=', 'on_the_way')]}"/>
+					<field name="notes"/>
 				</tree>
 			</field>
 		</record>
