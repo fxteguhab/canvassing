@@ -30,6 +30,7 @@ class canvasssing_canvas(osv.Model):
 		'trip_expense_ids': fields.one2many('canvassing.canvas.expense', 'canvas_id', 'Trip Expense'),
 		'stock_line_ids': fields.one2many('canvassing.canvas.stock.line', 'canvas_id', 'Stock Line'),
 		'invoice_line_ids': fields.one2many('canvassing.canvas.invoice.line', 'canvas_id', 'Invoice Line'),
+		'distance': fields.float('Distance'),
 	}
 	
 # DEFAULTS ------------------------------------------------------------------------------------------------------------------
@@ -169,7 +170,6 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'stock_picking_id': fields.many2one('stock.picking', 'Stock Picking', domain=[('state', '!=', 'done')]),
 		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
-		'distance': fields.float('Distance'),
 		'delivery_amount': fields.float('Delivery Amount'),
 		'delivery_fee_invoice_id': fields.many2one('account.invoice', 'Delivery Fee Invoice',
 			readonly=True, domain=[('state', '!=', 'done')]),
@@ -216,7 +216,6 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'address': fields.text('Address', required=True),
 		'journal_id': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', '=', 'cash')]),
 		'is_executed': fields.boolean('Is Executed'),
-		'distance': fields.float('Distance'),
 		'notes': fields.text('Notes'),
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}
