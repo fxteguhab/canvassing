@@ -75,6 +75,7 @@ class canvasssing_canvas(osv.Model):
 		expense_line_obj = self.pool.get('hr.expense.line')
 		canvas_stock_line_obj = self.pool.get('canvassing.canvas.stock.line')
 		for canvas_data in self.browse(cr, uid, ids):
+			if canvas_data.state in ['finished','canceled']: continue # jangan sampe kefinish dua kali
 		# Cek minimal harus ada satu line yg is_executed nya true. Dan kl is_executed nya false, dia harus ada notes nya.
 			valid = False
 			for stock_line in canvas_data.stock_line_ids:
