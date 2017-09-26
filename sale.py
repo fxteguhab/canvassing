@@ -12,6 +12,7 @@ class sale_order(osv.osv):
 			('shipped', 'Shipped'),
 			('taken', 'Taken')
 		], 'Shipped or Taken'),
+		'customer_address': fields.char('Customer Address')
 	}
 	
 	# WORKFLOWS -------------------------------------------------------------------------------------------------------------
