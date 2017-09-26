@@ -46,7 +46,7 @@
 						<page string="Invoices">
 							<field name="invoice_line_ids" attrs="{'readonly': [('state', '=', 'finished')]}">
 								<tree version="7.0" editable="bottom">
-									<field name="invoice_id" options="{'no_quick_create':True, 'no_create_edit':True}"/>
+									<field name="invoice_id" options="{'no_quick_create':True, 'no_create_edit':True}" on_change="onchange_invoice_id(invoice_id)"/>
 									<field name="address"/>
 									<field name="journal_id" options="{'no_quick_create':True, 'no_create_edit':True}"/>
 									<field name="canvas_state" invisible="True"/>

@@ -187,9 +187,17 @@ class canvasssing_canvas_stock_line(osv.Model):
 				stock_picking_obj = self.pool.get('stock.picking')
 				stock_picking = stock_picking_obj.browse(cr, uid, stock_picking_id)
 				if stock_picking:
-					result['value'].update({
-						'address': stock_picking.partner_id.contact_address.replace('\n',' ')
-					})
+					sale_order_obj = self.pool('sale.order')
+					sale_order_id = sale_order_obj.search(cr,uid,[('picking_ids', '=', stock_picking_id)], limit=1)
+					sale_order = sale_order_obj.browse(cr, uid, sale_order_id)
+					if sale_order.customer_address and len(sale_order.customer_address) > 0:
+						result['value'].update({
+							'address': sale_order.customer_address.replace('\n',' ')
+						})
+					else:
+						result['value'].update({
+							'address': stock_picking.partner_id.contact_address.replace('\n',' ')
+						})
 			except Exception, e:
 				result['value'].update({
 					'address': '',
@@ -225,6 +233,39 @@ class canvasssing_canvas_invoice_line(osv.Model):
 	_defaults = {
 		'journal_id': lambda self, cr, uid, *a: self.pool.get('account.journal').search(cr, uid, [('type', '=', 'cash')])[0]
 	}
+	
+# ONCHANGE ------------------------------------------------------------------------------------------------------------------
+	
+	def onchange_invoice_id(self, cr, uid, ids, invoice_id, context=None):
+		result = {}
+		result['value'] = {}
+		if invoice_id:
+			try:
+				invoice_obj = self.pool.get('account.invoice')
+				invoice = invoice_obj.browse(cr, uid, invoice_id)
+				if invoice:
+					sale_order_obj = self.pool('sale.order')
+					sale_order_id = sale_order_obj.search(cr,uid,[('invoice_ids', '=', invoice_id)], limit=1)
+					sale_order = sale_order_obj.browse(cr, uid, sale_order_id)
+					if sale_order.customer_address and len(sale_order.customer_address) > 0:
+						result['value'].update({
+							'address': sale_order.customer_address.replace('\n',' ')
+						})
+					else:
+						result['value'].update({
+							'address': invoice.partner_id.contact_address.replace('\n',' ')
+						})
+			except Exception, e:
+				result['value'].update({
+					'address': '',
+				})
+				result['warning'] = {
+					'title': e.name,
+					'message': e.value,
+				}
+			finally:
+				return result
+		return result
 
 # ===========================================================================================================================
 
