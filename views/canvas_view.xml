@@ -153,5 +153,23 @@
 			</field>
 		</record>
 
+		<record id="canvassing_canvas_line_inherit" model="ir.ui.view">
+			<field name="name">canvassing.canvas.line.tree</field>
+			<field name="model">canvassing.canvas</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Search Canvassing">
+					<group>
+						<filter string="Today" name="filter_date_order_today"
+								domain="[('date_depart','&gt;=',datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+							('date_depart','&lt;=',datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+					</group>
+					<group>
+						<filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+					</group>
+
+				</search>
+			</field>
+		</record>
 	</data>
 </openerp>
