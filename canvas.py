@@ -3,6 +3,8 @@ from datetime import datetime
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 
+import openerp.addons.decimal_precision as dp
+
 _CANVAS_STATE = [
 	('draft','Draft'),
 	('on_the_way','On The Way'),
@@ -222,6 +224,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
 		'invoice_id': fields.many2one('account.invoice', 'Invoice',  domain=[('state', '=', 'open')]),
 		'address': fields.text('Address', required=True),
+		'invoice_total': fields.float("Total", digits_compute=dp.get_precision('Account'), readonly=True),
 		'journal_id': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', '=', 'cash')]),
 		'is_executed': fields.boolean('Is Executed'),
 		'notes': fields.text('Notes'),
@@ -255,6 +258,9 @@ class canvasssing_canvas_invoice_line(osv.Model):
 						result['value'].update({
 							'address': invoice.partner_id.contact_address.replace('\n',' ')
 						})
+					result['value'].update({
+						'invoice_total': invoice.amount_total
+					})
 			except Exception, e:
 				result['value'].update({
 					'address': '',
