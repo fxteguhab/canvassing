@@ -259,7 +259,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 							'address': invoice.partner_id.contact_address.replace('\n',' ')
 						})
 					result['value'].update({
-						'invoice_total': invoice.amount_total
+						'invoice_total': invoice.residual
 					})
 			except Exception, e:
 				result['value'].update({
