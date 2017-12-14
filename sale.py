@@ -11,7 +11,7 @@ class sale_order(osv.osv):
 		'shipped_or_taken': fields.selection([
 			('shipped', 'Shipped'),
 			('taken', 'Taken')
-		], 'Shipped or Taken'),
+		], 'Shipped or Taken', readonly="True", states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}),
 		'customer_address': fields.char('Customer Address')
 	}
 	
