@@ -108,25 +108,28 @@ class canvasssing_canvas(osv.Model):
 		# CREATE ONGKIR
 			for stock_line in canvas_data.stock_line_ids:
 				if stock_line.is_executed:
-					new_invoice_id = invoice_obj.create(cr, uid, {
-						'partner_id': stock_line.stock_picking_id.partner_id.id,
-						'date_invoice': canvas_data.date_delivered,
-						'account_id': stock_line.stock_picking_id.partner_id.property_account_receivable.id,
-						'fiscal_position': stock_line.stock_picking_id.partner_id.property_account_position.id,
-					})
-					model, product_id = model_obj.get_object_reference(cr, uid, 'canvassing', 'canvassing_product_delivery_fee')
-					invoice_line_obj.create(cr, uid, {
-						'invoice_id': new_invoice_id,
-						'product_id': product_id,
-						'name': canvas_data.name,
-						'price_unit': stock_line.delivery_amount,
-						'quantity': 1.0,
-					})
-					canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
-						'delivery_fee_invoice_id': new_invoice_id,
-					}, context=context)
-				# Transfer pickings
-					stock_line.stock_picking_id.do_transfer()
+					# Check if there's stock picking id or not (because it's not required)
+					# only if there is, then create invoice
+					if stock_line.stock_picking_id:
+						new_invoice_id = invoice_obj.create(cr, uid, {
+							'partner_id': stock_line.stock_picking_id.partner_id.id,
+							'date_invoice': canvas_data.date_delivered,
+							'account_id': stock_line.stock_picking_id.partner_id.property_account_receivable.id,
+							'fiscal_position': stock_line.stock_picking_id.partner_id.property_account_position.id,
+						})
+						model, product_id = model_obj.get_object_reference(cr, uid, 'canvassing', 'canvassing_product_delivery_fee')
+						invoice_line_obj.create(cr, uid, {
+							'invoice_id': new_invoice_id,
+							'product_id': product_id,
+							'name': canvas_data.name,
+							'price_unit': stock_line.delivery_amount,
+							'quantity': 1.0,
+						})
+						canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
+							'delivery_fee_invoice_id': new_invoice_id,
+						}, context=context)
+					# Transfer pickings
+						stock_line.stock_picking_id.do_transfer()
 		# PAY INVOICE
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
