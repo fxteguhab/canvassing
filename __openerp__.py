@@ -11,15 +11,19 @@
 	'depends': [
 		"base", "board", "web", "website",
 		"chjs_custom_view",
-		"stock", "account", "fleet", "hr",
+		"stock", "account", "fleet", "hr", "sale"
 	],
 	'sequence': 150,
 	'data': [
 		'views/canvas_view.xml',
+		'views/sale_view.xml',
 		'data/product_data.xml',
 		'menu/canvas_menu.xml',
 		'report/documents/canvassing_manifest.xml',
 		'report/canvassing_report.xml',
+		'workflows/sale_workflow.xml',
+		'security/canvassing_security.xml',
+		'security/ir_rule.xml',
 	],
 	'demo': [
 	],

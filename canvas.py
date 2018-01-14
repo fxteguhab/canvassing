@@ -30,6 +30,7 @@ class canvasssing_canvas(osv.Model):
 		'trip_expense_ids': fields.one2many('canvassing.canvas.expense', 'canvas_id', 'Trip Expense'),
 		'stock_line_ids': fields.one2many('canvassing.canvas.stock.line', 'canvas_id', 'Stock Line'),
 		'invoice_line_ids': fields.one2many('canvassing.canvas.invoice.line', 'canvas_id', 'Invoice Line'),
+		'distance': fields.float('Distance'),
 	}
 	
 # DEFAULTS ------------------------------------------------------------------------------------------------------------------
@@ -47,7 +48,8 @@ class canvasssing_canvas(osv.Model):
 	
 	def _get_default_name(self, cr, uid, vals):
 		driver_name = self.pool.get('hr.employee').browse(cr, uid, [vals.get('driver1_id')]).name
-		prefix = "%s %s" % (datetime.today().strftime('%Y%m%d'), driver_name)
+		user_name = self.pool.get('res.users').browse(cr, uid, [uid]).name
+		prefix = "%s %s %s" % (datetime.today().strftime('%Y%m%d'), driver_name, user_name)
 		canvas_ids = self.search(cr, uid, [('name','=like',prefix+'%')], order='name DESC')
 		if len(canvas_ids) == 0:
 			last_number = 1
@@ -79,22 +81,15 @@ class canvasssing_canvas(osv.Model):
 		# Cek minimal harus ada satu line yg is_executed nya true. Dan kl is_executed nya false, dia harus ada notes nya.
 			valid = False
 			for stock_line in canvas_data.stock_line_ids:
-				if stock_line.is_executed:
-					valid = True
-				elif stock_line.notes == False or stock_line.notes == "":
-					raise osv.except_osv(_('Stock Line Error'),_('Please fill the notes why it is not executed.'))
+				if not stock_line.is_executed and (stock_line.notes is False or stock_line.notes == ""):
+					raise osv.except_osv(_('Stock Line Error'), _('Please fill the notes why it is not executed.'))
 			for invoice_line in canvas_data.invoice_line_ids:
-				if invoice_line.is_executed:
-					valid = True
-				elif invoice_line.notes == False or invoice_line.notes == "":
-					raise osv.except_osv(_('Invoice Line Error'),_('Please fill the notes why it is not executed.'))
-			if valid:
-				self.write(cr, uid, [canvas_data.id], {
-					'state': 'finished',
-					'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-				}, context=context)
-			else:
-				raise osv.except_osv(_('Invoice Line Error'),_('You must have at least one line executed.'))
+				if not invoice_line.is_executed and (invoice_line.notes is False or invoice_line.notes == ""):
+					raise osv.except_osv(_('Invoice Line Error'), _('Please fill the notes why it is not executed.'))
+			self.write(cr, uid, [canvas_data.id], {
+				'state': 'finished',
+				'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+			}, context=context)
 		# CREATE EXPENSE
 			new_expense_id = expense_obj.create(cr, uid, {
 				'employee_id': canvas_data.driver1_id.id,
@@ -178,7 +173,6 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'stock_picking_id': fields.many2one('stock.picking', 'Stock Picking', domain=[('state', '!=', 'done')]),
 		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
-		'distance': fields.float('Distance'),
 		'delivery_amount': fields.float('Delivery Amount'),
 		'delivery_fee_invoice_id': fields.many2one('account.invoice', 'Delivery Fee Invoice',
 			readonly=True, domain=[('state', '!=', 'done')]),
@@ -186,9 +180,31 @@ class canvasssing_canvas_stock_line(osv.Model):
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}
 
-# OVERRIDES -----------------------------------------------------------------------------------------------------------------
-
-
+# ONCHANGE ------------------------------------------------------------------------------------------------------------------
+	
+	def onchange_stock_picking(self, cr, uid, ids, stock_picking_id, context=None):
+		result = {}
+		result['value'] = {}
+		if stock_picking_id:
+			try:
+				stock_picking_obj = self.pool.get('stock.picking')
+				stock_picking = stock_picking_obj.browse(cr, uid, stock_picking_id)
+				if stock_picking:
+					result['value'].update({
+						'address': stock_picking.partner_id.contact_address.replace('\n',' ')
+					})
+			except Exception, e:
+				result['value'].update({
+					'address': '',
+				})
+				result['warning'] = {
+					'title': e.name,
+					'message': e.value,
+				}
+			finally:
+				return result
+		return result
+	
 # ===========================================================================================================================
 
 class canvasssing_canvas_invoice_line(osv.Model):
@@ -203,7 +219,6 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'address': fields.text('Address', required=True),
 		'journal_id': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', '=', 'cash')]),
 		'is_executed': fields.boolean('Is Executed'),
-		'distance': fields.float('Distance'),
 		'notes': fields.text('Notes'),
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
 	}

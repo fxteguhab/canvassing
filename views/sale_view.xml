@@ -1,0 +1,14 @@
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_order_form_inherit">
+			<field name="name">sale.order.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<field name="client_order_ref" position="after">
+					<field name="shipped_or_taken"/>
+				</field>
+			</field>
+		</record>
+	</data>
+</openerp>
