@@ -3,6 +3,8 @@ from datetime import datetime
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 
+import openerp.addons.decimal_precision as dp
+
 _CANVAS_STATE = [
 	('draft','Draft'),
 	('on_the_way','On The Way'),
@@ -109,25 +111,28 @@ class canvasssing_canvas(osv.Model):
 		# CREATE ONGKIR
 			for stock_line in canvas_data.stock_line_ids:
 				if stock_line.is_executed:
-					new_invoice_id = invoice_obj.create(cr, uid, {
-						'partner_id': stock_line.stock_picking_id.partner_id.id,
-						'date_invoice': canvas_data.date_delivered,
-						'account_id': stock_line.stock_picking_id.partner_id.property_account_receivable.id,
-						'fiscal_position': stock_line.stock_picking_id.partner_id.property_account_position.id,
-					})
-					model, product_id = model_obj.get_object_reference(cr, uid, 'canvassing', 'canvassing_product_delivery_fee')
-					invoice_line_obj.create(cr, uid, {
-						'invoice_id': new_invoice_id,
-						'product_id': product_id,
-						'name': canvas_data.name,
-						'price_unit': stock_line.delivery_amount,
-						'quantity': 1.0,
-					})
-					canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
-						'delivery_fee_invoice_id': new_invoice_id,
-					}, context=context)
-				# Transfer pickings
-					stock_line.stock_picking_id.do_transfer()
+					# Check if there's stock picking id or not (because it's not required)
+					# only if there is, then create invoice
+					if stock_line.stock_picking_id:
+						new_invoice_id = invoice_obj.create(cr, uid, {
+							'partner_id': stock_line.stock_picking_id.partner_id.id,
+							'date_invoice': canvas_data.date_delivered,
+							'account_id': stock_line.stock_picking_id.partner_id.property_account_receivable.id,
+							'fiscal_position': stock_line.stock_picking_id.partner_id.property_account_position.id,
+						})
+						model, product_id = model_obj.get_object_reference(cr, uid, 'canvassing', 'canvassing_product_delivery_fee')
+						invoice_line_obj.create(cr, uid, {
+							'invoice_id': new_invoice_id,
+							'product_id': product_id,
+							'name': canvas_data.name,
+							'price_unit': stock_line.delivery_amount,
+							'quantity': 1.0,
+						})
+						canvas_stock_line_obj.write(cr, uid, [stock_line.id], {
+							'delivery_fee_invoice_id': new_invoice_id,
+						}, context=context)
+					# Transfer pickings
+						stock_line.stock_picking_id.do_transfer()
 		# PAY INVOICE
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
@@ -190,9 +195,17 @@ class canvasssing_canvas_stock_line(osv.Model):
 				stock_picking_obj = self.pool.get('stock.picking')
 				stock_picking = stock_picking_obj.browse(cr, uid, stock_picking_id)
 				if stock_picking:
-					result['value'].update({
-						'address': stock_picking.partner_id.contact_address.replace('\n',' ')
-					})
+					sale_order_obj = self.pool('sale.order')
+					sale_order_id = sale_order_obj.search(cr,uid,[('picking_ids', '=', stock_picking_id)], limit=1)
+					sale_order = sale_order_obj.browse(cr, uid, sale_order_id)
+					if sale_order.customer_address and len(sale_order.customer_address) > 0:
+						result['value'].update({
+							'address': sale_order.customer_address.replace('\n',' ')
+						})
+					else:
+						result['value'].update({
+							'address': stock_picking.partner_id.contact_address.replace('\n',' ')
+						})
 			except Exception, e:
 				result['value'].update({
 					'address': '',
@@ -217,6 +230,7 @@ class canvasssing_canvas_invoice_line(osv.Model):
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
 		'invoice_id': fields.many2one('account.invoice', 'Invoice',  domain=[('state', '=', 'open')]),
 		'address': fields.text('Address', required=True),
+		'invoice_total': fields.float("Total", digits_compute=dp.get_precision('Account'), readonly=True),
 		'journal_id': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', '=', 'cash')]),
 		'is_executed': fields.boolean('Is Executed'),
 		'notes': fields.text('Notes'),
@@ -228,6 +242,42 @@ class canvasssing_canvas_invoice_line(osv.Model):
 	_defaults = {
 		'journal_id': lambda self, cr, uid, *a: self.pool.get('account.journal').search(cr, uid, [('type', '=', 'cash')])[0]
 	}
+	
+# ONCHANGE ------------------------------------------------------------------------------------------------------------------
+	
+	def onchange_invoice_id(self, cr, uid, ids, invoice_id, context=None):
+		result = {}
+		result['value'] = {}
+		if invoice_id:
+			try:
+				invoice_obj = self.pool.get('account.invoice')
+				invoice = invoice_obj.browse(cr, uid, invoice_id)
+				if invoice:
+					sale_order_obj = self.pool('sale.order')
+					sale_order_id = sale_order_obj.search(cr,uid,[('invoice_ids', '=', invoice_id)], limit=1)
+					sale_order = sale_order_obj.browse(cr, uid, sale_order_id)
+					if sale_order.customer_address and len(sale_order.customer_address) > 0:
+						result['value'].update({
+							'address': sale_order.customer_address.replace('\n',' ')
+						})
+					else:
+						result['value'].update({
+							'address': invoice.partner_id.contact_address.replace('\n',' ')
+						})
+					result['value'].update({
+						'invoice_total': invoice.residual
+					})
+			except Exception, e:
+				result['value'].update({
+					'address': '',
+				})
+				result['warning'] = {
+					'title': e.name,
+					'message': e.value,
+				}
+			finally:
+				return result
+		return result
 
 # ===========================================================================================================================
 

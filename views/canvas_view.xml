@@ -46,8 +46,9 @@
 						<page string="Invoices">
 							<field name="invoice_line_ids" attrs="{'readonly': [('state', '=', 'finished')]}">
 								<tree version="7.0" editable="bottom">
-									<field name="invoice_id" options="{'no_quick_create':True, 'no_create_edit':True}"/>
+									<field name="invoice_id" options="{'no_quick_create':True, 'no_create_edit':True}" on_change="onchange_invoice_id(invoice_id)"/>
 									<field name="address"/>
+									<field name="invoice_total"/>
 									<field name="journal_id" options="{'no_quick_create':True, 'no_create_edit':True}"/>
 									<field name="canvas_state" invisible="True"/>
 									<field name="is_executed"
@@ -143,6 +144,7 @@
 				<tree editable="bottom">
 					<field name="invoice_id"/>
 					<field name="address"/>
+					<field name="invoice_total"/>
 					<field name="canvas_state" invisible="1"/>
 					<field name="is_executed"
 							attrs="{'invisible': [('canvas_state', '=', 'draft')]}"/>
@@ -151,5 +153,23 @@
 			</field>
 		</record>
 
+		<record id="canvassing_canvas_line_inherit" model="ir.ui.view">
+			<field name="name">canvassing.canvas.line.tree</field>
+			<field name="model">canvassing.canvas</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Search Canvassing">
+					<group>
+						<filter string="Today" name="filter_date_order_today"
+								domain="[('date_depart','&gt;=',datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
+							('date_depart','&lt;=',datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+					</group>
+					<group>
+						<filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+					</group>
+
+				</search>
+			</field>
+		</record>
 	</data>
 </openerp>
