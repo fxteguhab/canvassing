@@ -153,21 +153,42 @@
 			</field>
 		</record>
 
-		<record id="canvassing_canvas_line_inherit" model="ir.ui.view">
-			<field name="name">canvassing.canvas.line.tree</field>
+		<record id="canvassing_canvas_line_search" model="ir.ui.view">
+			<field name="name">canvassing.canvas.line.search</field>
 			<field name="model">canvassing.canvas</field>
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="Search Canvassing">
-					<group>
+					<field name="name" />
+					<field name="driver1_id" />
+					<field name="driver2_id" />
+					<field name="fleet_vehicle_id" />
+					<group string="Filter">
 						<filter string="Today" name="filter_date_order_today"
 								domain="[('date_depart','&gt;=',datetime.datetime.combine(context_today(), datetime.time(0,0,0))),
 							('date_depart','&lt;=',datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+						<filter string="Draft" name="filter_state_draft" domain="[('state','=','draft')]" />
+						<filter string="On The Way" name="filter_state_on_the_way" domain="[('state','=','on_the_way')]" />
+						<filter string="Finished" name="filter_state_finished" domain="[('state','=','finished')]" />
 					</group>
-					<group>
-						<filter name="group_branch" string="Branch" context="{'group_by':'branch_id'}"/>
+					<group name="group_by" string="Group By">
+						<filter string="Driver 1" name="driver1_id" domain="[]"
+							context="{'group_by': 'driver1_id'}"/>
+						<filter string="Driver 2" name="driver2_id" domain="[]"
+							context="{'group_by': 'driver2_id'}"/>
+						<filter string="Vehicle" name="fleet_vehicle_id" domain="[]"
+							context="{'group_by': 'fleet_vehicle_id'}"/>
+						<filter string="State" name="state" domain="[]"
+							context="{'group_by': 'state'}"/>
 					</group>
-
+					<group string="Group By Departure Date">
+						<filter string="Year" name="date_depart_year" domain="[]"
+							context="{'group_by': 'date_depart:year'}"/>
+						<filter string="Month" name="date_depart_month" domain="[]"
+							context="{'group_by': 'date_depart:month'}"/>
+						<filter string="Day" name="date_depart_day" domain="[]"
+							context="{'group_by': 'date_depart:Day'}"/>
+					</group>
 				</search>
 			</field>
 		</record>
