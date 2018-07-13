@@ -48,10 +48,10 @@
 						<tbody>
 							<tr t-foreach="o.stock_line_ids" t-as="line">
 								<td>
-									<t t-if="line.stock_picking_id.picking_type_id == %(stock.picking_type_in)s">
+									<t t-if="line.stock_picking_id.picking_type_id.code == 'outgoing'">
 										Deliver
 									</t>
-									<t t-if="line.stock_picking_id.picking_type_id == %(stock.picking_type_out)s">
+									<t t-if="line.stock_picking_id.picking_type_id.code == 'incoming'">
 										Take
 									</t>
 								</td>

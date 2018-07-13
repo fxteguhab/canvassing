@@ -68,6 +68,15 @@ class canvasssing_canvas(osv.Model):
 				'state': 'on_the_way',
 				'date_depart': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
 			}, context=context)
+
+		# TEGUH@20180329 : tambahan untuk ubah state interbranch jadi state OTW
+		interbranch_stock_move_obj = self.pool.get('tbvip.interbranch.stock.move')
+		for canvas in self.browse(cr, uid, ids, context=context):
+			for interbranch_canvas_line in canvas.interbranch_move_ids:
+				if interbranch_canvas_line.is_executed:
+					interbranch_stock_move_obj.action_otw(cr, uid, [interbranch_canvas_line.interbranch_move_id.id], context=context)
+
+
 	
 	def action_set_finish(self, cr, uid, ids, context={}):
 		model_obj = self.pool.get('ir.model.data')

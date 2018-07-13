@@ -75,7 +75,8 @@
 			<field name="model">canvassing.canvas</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree>
+				<!-- TEGUH@20180405 : tambah color -->
+				<tree default_order = 'date_created desc' colors="red:state =='on_the_way';green:distance&gt;= 10" >
 					<field name="name"/>
 					<field name="state"/>
 					<field name="date_created"/>
