@@ -1,7 +1,7 @@
 <openerp>
 	<data>
 		<record id="canvassing_canvas_action" model="ir.actions.act_window">
-			<field name="name">Canvassing</field>
+			<field name="name">Delivery Orders</field>
 			<field name="res_model">canvassing.canvas</field>
 			<field name="view_type">form</field>
 			<field name="context" eval="{
@@ -11,7 +11,7 @@
 		</record>
 
 		<record id="canvassing_canvas_expense_action" model="ir.actions.act_window">
-			<field name="name">Canvassing Expense</field>
+			<field name="name">Delivery Expenses</field>
 			<field name="res_model">canvassing.canvas.expense</field>
 			<field name="view_type">form</field>
 		</record>
