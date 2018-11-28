@@ -10,7 +10,7 @@
 	'website': 'http://www.chjs.biz',
 	'depends': [
 		"base", "board", "web", "website",
-		"chjs_custom_view",
+		#"chjs_custom_view",
 		"stock", "account", "fleet", "hr", "sale"
 	],
 	'sequence': 150,

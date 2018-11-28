@@ -8,6 +8,7 @@
 				<field name="client_order_ref" position="after">
 					<field name="shipped_or_taken"/>
 					<field name="customer_address" attrs="{'invisible': [('shipped_or_taken','!=','shipped')]}"/>
+					<field name="delivery_date" attrs="{'invisible': [('shipped_or_taken','!=','shipped')]}"/>
 				</field>
 			</field>
 		</record>

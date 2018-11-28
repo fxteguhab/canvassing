@@ -1,7 +1,7 @@
 from openerp import tools
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
-
+from datetime import datetime
 # ==========================================================================================================================
 
 class sale_order(osv.osv):
@@ -9,12 +9,19 @@ class sale_order(osv.osv):
 	
 	_columns = {
 		'shipped_or_taken': fields.selection([
-			('shipped', 'Shipped'),
-			('taken', 'Taken')
-		], 'Shipped or Taken', readonly="True", states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}),
-		'customer_address': fields.char('Customer Address')
+			('taken', 'Pick-Up'),
+			('shipped', 'Delivery'),
+		], 'Pick-Up / Delivery', readonly="True", states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}),
+		'customer_address': fields.char('Customer Address'),
+		'delivery_date': fields.datetime('Delivery Date'),
 	}
 	
+	# DEFAULTS ------------------------------------------------------------------------------------------------------------------
+	
+	_defaults = {
+		'delivery_date': lambda *a: datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+	}
+
 	# WORKFLOWS -------------------------------------------------------------------------------------------------------------
 	
 	def action_ship_create(self, cr, uid, ids, context=None):

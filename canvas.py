@@ -186,8 +186,8 @@ class canvasssing_canvas(osv.Model):
 				'state': 'finished',
 				'date_delivered': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
 			}, context=context)
-		# CREATE EXPENSE
-
+			# CREATE EXPENSE
+			'''
 			new_expense_id = expense_obj.create(cr, uid, {
 				'employee_id': canvas_data.driver1_id.id,
 				'date': canvas_data.date_delivered,
@@ -203,12 +203,15 @@ class canvasssing_canvas(osv.Model):
 					'unit_amount': expense_line.amount,
 					'unit_quantity': 1.0,
 				})
-		# CREATE ONGKIR
+			'''
+			# CREATE ONGKIR
 			# Check if there's stock picking id or not (because it's not required)
 			for stock_line in canvas_data.stock_line_ids:
 				if (stock_line.stock_picking_id) and (stock_line.is_executed):
 					# Transfer pickings
-					stock_line.stock_picking_id.do_transfer()
+					if (stock_line.stock_picking_id.picking_type_id.code == 'outgoing'):
+						stock_line.stock_picking_id.do_transfer()
+					'''
 					if  (stock_line.delivery_amount >0):
 					# only if there is, then create invoice
 						new_invoice_id = invoice_obj.create(cr, uid, {
@@ -233,8 +236,9 @@ class canvasssing_canvas(osv.Model):
 						#validate invoice
 						invoice_obj.signal_workflow(cr, uid, [new_invoice_id], 'invoice_open', context)
 						self._make_payment(cr, uid, stock_line.stock_picking_id.partner_id.id, stock_line.delivery_amount, 'cash',[new_invoice_id], context=None)
-
-		# PAY INVOICE
+					'''
+			'''
+			# PAY INVOICE
 			for invoice_line in canvas_data.invoice_line_ids:
 				if invoice_line.is_executed:
 					inv = invoice_line.invoice_id
@@ -265,7 +269,7 @@ class canvasssing_canvas(osv.Model):
 					})
 					voucher_obj.proforma_voucher(cr, uid, [new_voucher_id])
 			
-
+			'''
 # ===========================================================================================================================
 
 class canvasssing_canvas_stock_line(osv.Model):
@@ -276,7 +280,7 @@ class canvasssing_canvas_stock_line(osv.Model):
 	
 	_columns = {
 		'canvas_id': fields.many2one('canvassing.canvas', 'Canvas'),
-		'stock_picking_id': fields.many2one('stock.picking', 'Stock Picking', domain=[('state', '!=', 'done')]),
+		'stock_picking_id': fields.many2one('stock.picking', 'Stock Picking', domain=[('state', '=', 'assigned')]),
 		'address': fields.text('Address', required=True),
 		'is_executed': fields.boolean('Is Executed'),
 		'delivery_amount': fields.float('Delivery Fee'),
