@@ -288,6 +288,7 @@ class canvasssing_canvas_stock_line(osv.Model):
 			readonly=True, domain=[('state', '!=', 'done')]),
 		'notes': fields.text('Notes'),
 		'canvas_state': fields.related('canvas_id', 'state', type='char', string='Canvas State'),
+		'partner_id' : fields.many2one('res.partner','Partner'), 
 	}
 
 # ONCHANGE ------------------------------------------------------------------------------------------------------------------
@@ -305,11 +306,13 @@ class canvasssing_canvas_stock_line(osv.Model):
 					sale_order = sale_order_obj.browse(cr, uid, sale_order_id)
 					if sale_order.customer_address and len(sale_order.customer_address) > 0:
 						result['value'].update({
-							'address': sale_order.customer_address.replace('\n',' ')
+							'address': sale_order.customer_address.replace('\n',' '),
+							'partner_id' : sale_order.partner_id.id,
 						})
 					else:
 						result['value'].update({
-							'address': stock_picking.partner_id.contact_address.replace('\n',' ')
+							'address': stock_picking.partner_id.contact_address.replace('\n',' '),
+							'partner_id' : sale_order.partner_id.id,
 						})
 			except Exception, e:
 				result['value'].update({
